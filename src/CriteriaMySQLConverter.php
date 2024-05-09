@@ -14,7 +14,7 @@ use Oscmarb\Criteria\Order\CriteriaOrderType;
 use Oscmarb\Criteria\Pagination\CriteriaLimit;
 use Oscmarb\Criteria\Pagination\CriteriaOffset;
 
-final class CriteriaMySQLConverter
+class CriteriaMySQLConverter
 {
     private string $query;
 
