@@ -69,50 +69,50 @@ class CriteriaMySQLConverter
         $offset = $criteria->offset();
 
         if (null !== $filter) {
-            $this->query .= " WHERE {$this->visitFilter($filter)}";
+            $this->query .= " WHERE {$this->formatFilter($filter)}";
         }
 
         if (false === $orders->isEmpty()) {
-            $this->query .= " {$this->visitOrders($orders)}";
+            $this->query .= " {$this->formatOrders($orders)}";
         }
 
         if (null !== $limit) {
-            $this->query .= " {$this->visitLimit($limit)}";
+            $this->query .= " {$this->formatLimit($limit)}";
         }
 
         if (null !== $offset) {
-            $this->query .= " {$this->visitOffset($offset)}";
+            $this->query .= " {$this->formatOffset($offset)}";
         }
 
         return $this->query;
     }
 
-    protected function visitAnd(AndFilter $filter): string
+    protected function formatAnd(AndFilter $filter): string
     {
         return ' ( '
             .implode(
                 ' AND ',
-                array_map(fn(Filter $filter) => $this->visitFilter($filter), $filter->filters())
+                array_map(fn(Filter $filter) => $this->formatFilter($filter), $filter->filters())
             )
             .' )';
     }
 
-    protected function visitOr(OrFilter $filter): string
+    protected function formatOr(OrFilter $filter): string
     {
         return ' ( '
             .implode(
                 ' OR ',
-                array_map(fn(Filter $filter) => $this->visitFilter($filter), $filter->filters())
+                array_map(fn(Filter $filter) => $this->formatFilter($filter), $filter->filters())
             )
             .' )';
     }
 
-    protected function visitCondition(ConditionFilter $filter): string
+    protected function formatCondition(ConditionFilter $filter): string
     {
         return " {$this->mapFieldValue($filter->field()->value())} {$this->mapOperator($filter)} {$this->mapParameter($filter)}";
     }
 
-    protected function visitOrders(CriteriaOrders $orders): string
+    protected function formatOrders(CriteriaOrders $orders): string
     {
         if (true === $orders->isEmpty()) {
             throw new \RuntimeException('Unexpected empty orders');
@@ -127,28 +127,28 @@ class CriteriaMySQLConverter
             );
     }
 
-    protected function visitLimit(CriteriaLimit $limit): string
+    protected function formatLimit(CriteriaLimit $limit): string
     {
         return " LIMIT {$limit->value()}";
     }
 
-    protected function visitOffset(CriteriaOffset $offset): string
+    protected function formatOffset(CriteriaOffset $offset): string
     {
         return " OFFSET {$offset->value()}";
     }
 
-    protected function visitFilter(Filter $filter): string
+    protected function formatFilter(Filter $filter): string
     {
         if (true === $filter instanceof AndFilter) {
-            return " {$this->visitAnd($filter)}";
+            return " {$this->formatAnd($filter)}";
         }
 
         if (true === $filter instanceof OrFilter) {
-            return " {$this->visitOr($filter)}";
+            return " {$this->formatOr($filter)}";
         }
 
         if (true === $filter instanceof ConditionFilter) {
-            return " {$this->visitCondition($filter)}";
+            return " {$this->formatCondition($filter)}";
         }
 
         throw new \RuntimeException('Unknown filter type');
