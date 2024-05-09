@@ -33,7 +33,7 @@ class CriteriaMySQLConverter
      * @param string[]|null         $joins
      * @param array<string, string> $criteriaToMapFields
      */
-    private function __construct(array $fieldsToSelect, string $tableName, ?array $joins, private array $criteriaToMapFields)
+    protected function __construct(array $fieldsToSelect, string $tableName, ?array $joins, private array $criteriaToMapFields)
     {
         $fieldsToSelect = self::cleanEmptyElements($fieldsToSelect);
 
